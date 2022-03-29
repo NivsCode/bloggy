@@ -1,0 +1,20 @@
+   version: "3.9"
+
+   services:
+   # Database for local development
+    db:
+        image: postgres
+        restart: always
+        environment:
+        - POSTGRES_NAME=postgres
+        - POSTGRES_USER=root
+        - POSTGRES_PASSWORD=postgres
+        volumes:
+        - ./data/db:/var/lib/postgresql/data
+        ports:
+        - "5432:5432"
+        healthcheck:
+          test: ["CMD", "pg_isready"]
+          interval: 1s
+          timeout: 3s
+          retries: 30
