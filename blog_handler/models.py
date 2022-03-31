@@ -7,14 +7,28 @@ from django.urls import reverse
 MAX_TITLE_LENGTH = 200
 User = get_user_model()
 
+class PublishedManager(models.Manager):
+    def get_queryset(self):
+        return super(PublishedManager,self).get_queryset().filter(status='published')
+
+class DraftManager(models.Manager):
+    def get_queryset(self):
+        return super(DraftManager,self).get_queryset().filter(status='draft')
+
+
 class Post(models.Model):
     STATUS_CHOICES = (
         ('draft', 'DRAFT'),
         ('published', 'PUBLISHED'),
     )
 
+    # managers
+    objects = models.Manager()
+    published = PublishedManager()
+    drafts = DraftManager()
+
     title = models.CharField(max_length=MAX_TITLE_LENGTH)
-    slug = models.SlugField()
+    slug = models.SlugField(max_length=200, unique=True)
     content = models.TextField()
     status = models.CharField(choices=STATUS_CHOICES, max_length=10, default='draft')
     created_at = models.DateTimeField(auto_now_add=True)
@@ -32,16 +46,19 @@ class Post(models.Model):
         super(Post, self).save(*args, **kwargs)
     
     def get_absolute_url(self):
-        return reverse('posts')
+        return reverse(
+            'blog_handler:post_detail',
+            args=[self.slug]
+        )
 
 class Comment(models.Model):
     content = models.TextField()
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
-    parent_comment = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True)
+    parent_comment = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True,  related_name='replies')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
 
     def __str__(self):
         return f'{self.id} - {self.content}'

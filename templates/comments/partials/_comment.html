@@ -1,0 +1,30 @@
+<style type="text/css">
+<!--
+    .tab { margin-left: 40px; }
+-->
+</style>
+<script>
+    function showDiv(comment_id) {
+        document.getElementById(comment_id).style.display = "block";
+    }
+</script>
+
+{% if comment.author is not None %}
+    <h3>{{ comment.author }} commented </h3>
+{% else %}
+    <h3>guest user commented </h3>
+{% endif %}
+
+<p>{{ comment.content }}</p>
+
+<button onclick="showDiv({{ comment.id }})");>reply</button>
+
+<div id="{{ comment.id }}" style="display:none" class="reply">
+    {% include 'comments/partials/_comment_form.html' with form=form parent_comment=comment %}
+</div>
+
+<div class="tab">
+    {% for reply in comment.replies.all %}
+        {% include 'comments/partials/_comment.html' with comment=reply parent_comment=comment %}
+    {% endfor %}
+</div>
