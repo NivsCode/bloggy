@@ -2,7 +2,7 @@ from .models import Comment, Post
 from django.forms import ModelForm, IntegerField
 
 class CommentForm(ModelForm):
-    parent_comment_id = IntegerField()
+    parent_comment_id = IntegerField(required=False)
     class Meta:
         model = Comment
         fields = ('content', 'parent_comment_id')

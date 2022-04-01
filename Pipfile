@@ -12,6 +12,8 @@ Pillow = "==9.0.1"
 [dev-packages]
 pylint = "*"
 black = "*"
+autopep8 = "*"
+django-extensions = "*"
 
 [requires]
 python_version = "3.9"

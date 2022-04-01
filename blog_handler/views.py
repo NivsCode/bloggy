@@ -1,15 +1,37 @@
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Post, Comment
-from django.views.generic import ListView, DetailView, CreateView
-# from django.views.generic.edit import EditView, DeleteModel
+from django.views.generic import ListView, DetailView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from .forms import PostForm, CommentForm
 
-class PostCreateView(LoginRequiredMixin, CreateView):
+class AuthorMixin(object):
+    def get_queryset(self):
+        qs = super().get_queryset()
+        return qs.filter(author=self.request.user)
+
+class AuthorEditMixin(object):
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super().form_valid(form)
+    
+class AuthorPostMixin(AuthorMixin, LoginRequiredMixin):
+    model = Post
+    success_url = reverse_lazy('home')
+
+class AuthorPostEditMixin(AuthorPostMixin, AuthorEditMixin):
+    template_name = 'posts/form.html'
+
+class PostCreateView(AuthorPostEditMixin, CreateView):
     form_class = PostForm
-    success_url = reverse_lazy('post_detail')
-    template_name = 'registration/signup.html'
+    success_url = reverse_lazy('home')
+
+class PostUpdateView(AuthorPostEditMixin, UpdateView):
+    fields = ['title', 'content', 'status',]
+
+class PostDeleteView(AuthorPostMixin, DeleteView):
+    template_name = 'posts/delete.html'
 
 class PostListView(ListView):
     model = Post
@@ -28,7 +50,7 @@ class PostDetailView(DetailView):
         
         comment_form = CommentForm()
         post = get_object_or_404(Post, slug=slug)
-        comments = post.comment_set.filter(parent_comment=None).all()
+        comments = post.comment_set.filter(parent_comment=None)
         
         context['post'] = post
         context['comments'] = comments
@@ -46,14 +68,11 @@ class PostDetailView(DetailView):
         context['post'] = post
         context['comments'] = comments
         context['form'] = form
-        
+
         if form.is_valid():
             content = form.cleaned_data['content']
-            # parent_comment = form.cleaned_data['parent_comment']
-            print(f'{form.cleaned_data}')
             parent_comment = comments.filter(id=form.cleaned_data['parent_comment_id']).first()
             author = request.user if request.user.is_authenticated else None
-            
             Comment.objects.create(
                 content = content,
                 author = author,

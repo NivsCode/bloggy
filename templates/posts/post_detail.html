@@ -13,5 +13,6 @@ Post title: {{ object.title }}
             {% include 'comments/partials/_comment.html' with comment=comment %}
         {% endfor %}
     {% endif %}
+    <br>
     {% include 'comments/partials/_comment_form.html' with form=form %}
 {% endblock content %}
