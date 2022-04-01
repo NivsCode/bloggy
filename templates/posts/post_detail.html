@@ -7,7 +7,7 @@ Post title: {{ object.title }}
 {% block content %}
     {% include 'posts/partials/_post.html' with post=post %}
     <br>
-    <h3>Comments</h3>
+    <h2>Comments</h2>
     {% if comments is not None %}
         {% for comment in comments %}
             {% include 'comments/partials/_comment.html' with comment=comment %}

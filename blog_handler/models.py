@@ -3,6 +3,8 @@ from django.contrib.auth import get_user_model
 from django.template.defaultfilters import slugify
 from django.utils import timezone
 from django.urls import reverse
+from simple_history.models import HistoricalRecords
+from django.contrib.humanize.templatetags.humanize import naturaltime
 
 MAX_TITLE_LENGTH = 200
 User = get_user_model()
@@ -35,6 +37,9 @@ class Post(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     published_at = models.DateTimeField(default=timezone.now)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
+    
+    # Version control
+    history = HistoricalRecords()
 
     def __str__(self):
         return f'{self.id} - {self.title} - {self.status} - {self.slug}'
@@ -50,6 +55,19 @@ class Post(models.Model):
             'blog_handler:post_detail',
             args=[self.slug]
         )
+    
+    def get_history(self):
+        version_string = None
+        type_dict = {
+            '+': 'created',
+            '-': 'deleted',
+            '~': 'updated'
+        }
+        version = self.history.latest()
+        if version:
+            version_string = f'Post was {type_dict[version.history_type]} {naturaltime(version.history_date)}'
+
+        return version_string
 
 class Comment(models.Model):
     content = models.TextField()
@@ -59,6 +77,9 @@ class Comment(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     
     author = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
+    
+    # Version control
+    history = HistoricalRecords()
 
     def __str__(self):
         return f'{self.id} - {self.content}'
