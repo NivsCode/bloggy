@@ -1,0 +1,18 @@
+{% extends '_base.html' %}
+
+{% block title %}
+Post title: {{ object.title }}
+{% endblock title %}
+
+{% block content %}
+    {% include 'posts/partials/_post.html' with post=post %}
+    <br>
+    <h2>Comments</h2>
+    {% if comments is not None %}
+        {% for comment in comments %}
+            {% include 'comments/partials/_comment.html' with comment=comment %}
+        {% endfor %}
+    {% endif %}
+    <br>
+    {% include 'comments/partials/_comment_form.html' with form=form %}
+{% endblock content %}

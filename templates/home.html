@@ -1,0 +1,16 @@
+{% extends '_base.html' %}
+ {% block title %}
+ 	Home
+{% endblock title %}
+
+{% block content %}
+
+<h1>Bloggy</h1>
+ {% if user.is_authenticated %}
+   Hi {{ user.username }}! 
+ {% endif %}
+ {% for post in posts %}
+   {% include 'posts/partials/_post_preview.html' with post=post %}
+ {% endfor %}
+
+ {% endblock content %}

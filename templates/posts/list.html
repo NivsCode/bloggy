@@ -1,0 +1,13 @@
+{% extends '_base.html' %}
+
+{% block title %}
+    Post list
+{% endblock title %}
+
+{% block content %}
+{% for post in posts %}
+    {% include 'posts/partials/_post_preview.html' with post=post %}
+{% empty %}
+    <p>No Posts present.</p>
+{% endfor %}
+{% endblock content %}
