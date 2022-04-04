@@ -6,40 +6,63 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from .forms import PostForm, CommentForm
 
+# mixins
 class AuthorMixin(object):
+    """Retrieves only objects belonging to the current user
+    """
     def get_queryset(self):
         qs = super().get_queryset()
         return qs.filter(author=self.request.user)
 
 class AuthorEditMixin(object):
+    """Sets author attribute for form automatically
+    """
     def form_valid(self, form):
         form.instance.author = self.request.user
         return super().form_valid(form)
     
 class AuthorPostMixin(AuthorMixin, LoginRequiredMixin):
     model = Post
-    success_url = reverse_lazy('home')
+    success_url = reverse_lazy('blog_handler:post_published')
 
 class AuthorPostEditMixin(AuthorPostMixin, AuthorEditMixin):
     template_name = 'posts/form.html'
 
+# views
 class PostCreateView(AuthorPostEditMixin, CreateView):
+    """Handles post creation.
+    """
     form_class = PostForm
-    success_url = reverse_lazy('home')
+    success_url = reverse_lazy('blog_handler:post_published')
 
 class PostUpdateView(AuthorPostEditMixin, UpdateView):
+    """Handles post updation.
+    """
     fields = ['title', 'content', 'status',]
 
 class PostDeleteView(AuthorPostMixin, DeleteView):
+    """Handles post deletion.
+    """
     template_name = 'posts/delete.html'
 
 class PostListView(ListView):
     model = Post
-    queryset = Post.drafts.all()
     context_object_name = 'posts'
     template_name = 'posts/list.html'
+
+class PostDraftView(PostListView):
+    """Handles listing draft posts
+    """
+    queryset = Post.drafts.all()
+    
+class PostPublishedView(PostListView):
+    """Handles listing published posts
+    """
+    queryset = Post.published.all()
     
 class PostDetailView(DetailView):
+    """Handles individual post retrieval and comment/reply creation.
+    """
     model = Post
     context_object_name = 'posts'
     template_name = 'posts/post_detail.html'

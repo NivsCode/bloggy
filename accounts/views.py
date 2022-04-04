@@ -3,6 +3,8 @@ from django.views import generic
 from .forms import CustomUserCreationForm
 
 class SignUpPageView(generic.CreateView):
+    """Handles sign up with custom user model
+    """
     form_class = CustomUserCreationForm
     success_url = reverse_lazy('login')
     template_name = 'registration/signup.html'

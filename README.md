@@ -1,10 +1,10 @@
-# Assumptions
-- Users can create blogs to which they can submit multiple posts.
-
+# Problem statements
+A single user blog with comment and replies feature
 # Getting Started
+
 ## Prerequisites
 
-* (docker and docker-compose)[https://docs.docker.com/desktop/mac/install]
+[Docker for mac](https://docs.docker.com/desktop/mac/install)
 
 ## Installation
 
@@ -22,3 +22,12 @@
    ```
    make migrate
    ```
+
+# Notes
+- accounts app handles user authentication and registration
+- pages app handles static pages
+- blog_handler app handles posts, comments.
+
+# Known issues
+- Re hiding the comment box
+- displaying history with user information

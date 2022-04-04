@@ -6,6 +6,12 @@
 </head>
 <body>
     <div class="container">
+        <h1>Bloggy</h1>
+
+        {% if user.is_authenticated %}
+        Hi {{ user.username }}! 
+        {% endif %}
+
         {% block content %}
         {% endblock content %}
         
