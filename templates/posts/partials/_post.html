@@ -4,6 +4,9 @@ Published {{ post.published_at }} by {{ post.author }}
 </p>
 {{ post.content|linebreaks }}
 <br>
+    <a href="{% url 'blog_handler:post_update' post.slug %}">Edit</a>
+    <a href="{% url 'blog_handler:post_delete' post.slug %}">Delete</a>
+<br>
 <p>
     <h2>Updates</h2>
     {{ post.get_history }}
