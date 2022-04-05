@@ -11,12 +11,12 @@ Pillow = "==9.0.1"
 django-simple-history = "*"
 factory-boy = "==3.2.1"
 faker = "==12.0.0"
+django-extensions = "*"
 
 [dev-packages]
 pylint = "*"
 black = "*"
 autopep8 = "*"
-django-extensions = "*"
 
 [requires]
 python_version = "3.9"
