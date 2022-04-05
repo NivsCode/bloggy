@@ -6,11 +6,11 @@ help:
 
 install-dependencies:
 	@echo "Installing pipenv using pip..."
-	@pip install pipenv 
+	@pip3 install pipenv 
 	@pipenv install
 
 init-postgres:
-	@echo "Initializing posgres..."
+	@echo "Initializing postgres..."
 	@docker compose up -d db
 
 init-depedencies: init-postgres

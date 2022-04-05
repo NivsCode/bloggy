@@ -82,5 +82,5 @@ class Comment(models.Model):
     history = HistoricalRecords()
 
     def __str__(self):
-        return f'{self.id} - {self.content}'
+        return f'{self.id} - {self.content} - {self.parent_comment}'
     
