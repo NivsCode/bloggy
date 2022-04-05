@@ -50,10 +50,12 @@ class PostListView(ListView):
     context_object_name = 'posts'
     template_name = 'posts/list.html'
 
-class PostDraftView(PostListView):
+class PostDraftView(AuthorMixin, PostListView):
     """Handles listing draft posts
     """
-    queryset = Post.drafts.all()
+    def get_queryset(self):
+        qs = super().get_queryset()
+        return qs.filter(status='draft')
     
 class PostPublishedView(PostListView):
     """Handles listing published posts
