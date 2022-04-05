@@ -1,30 +1,34 @@
-# Problem statements
-A single user blog with comment and replies feature
+# Problem statement
+A single user blog with comment and replies feature. App allows guest users to comment on posts as well.
+
 # Getting Started
 
 ## Prerequisites
 
 - Docker
 - Python3
-- Pip
+- Pip3
 
 ## Installation
 
 1. Clone this repo in your local workspace
-
-2. Install dependencies
+2. Create environment variables
+   ```
+   mv .env.example .env
+   ```
+3. Install dependencies
    ```
    make install-dependencies
    ```
-2. Initialize dependencies.
+4. Initialize dependencies.
    ```
    make init-depedencies
    ```
-3. Apply migrations
+5. Apply migrations
    ```
    make migrate
    ```
-4. Run the service
+6. Run the service
    ```
    make run
    ``` 
