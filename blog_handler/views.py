@@ -76,7 +76,6 @@ class PostDetailView(DetailView):
         comment_form = CommentForm()
         post = get_object_or_404(Post, slug=slug)
         comments = post.comment_set.filter(parent_comment=None)
-        
         context['post'] = post
         context['comments'] = comments
         context['form'] = comment_form
@@ -88,7 +87,7 @@ class PostDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         
         post = Post.objects.filter(slug=self.kwargs.get('slug')).first()
-        comments = post.comment_set.all()
+        comments = post.comment_set.filter(parent_comment=None)
         
         context['post'] = post
         context['comments'] = comments
@@ -96,7 +95,7 @@ class PostDetailView(DetailView):
 
         if form.is_valid():
             content = form.cleaned_data['content']
-            parent_comment = comments.filter(id=form.cleaned_data['parent_comment_id']).first()
+            parent_comment = post.comment_set.filter(id=form.cleaned_data['parent_comment_id']).first()
             author = request.user if request.user.is_authenticated else None
             Comment.objects.create(
                 content = content,
